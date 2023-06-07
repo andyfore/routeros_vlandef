@@ -84,10 +84,12 @@ reply = confirm_prompt("Does VLAN need DHCP?")
 
 if reply:
     print()
+    defRangeStart = format(ipaddress.IPv4Address(NEW_VLAN_GW_IP))[:format(ipaddress.IPv4Address(NEW_VLAN_GW_IP)).rfind(".")] + ".10"
+    defRangeEnd = format(ipaddress.IPv4Address(NEW_VLAN_GW_IP))[:format(ipaddress.IPv4Address(NEW_VLAN_GW_IP)).rfind(".")] + ".100"
     listOutput[0]= f"# {dictInput['vlanName']} VLAN interface creation, IP assignment, and DHCP service"
     dictInput.update({"vlanDHCPServerName": NEW_VLAN + "_VLAN"})
     dictInput.update({"vlanDHCPPool": NEW_VLAN + "_VLAN"})
-    NEW_VLAN_DHCP_RANGE = input('VLAN DHCP Range: [] ')
+    NEW_VLAN_DHCP_RANGE = str(input('VLAN DHCP Range: [{}-{}] '.format(defRangeStart, defRangeEnd)) or defRangeStart + "-" + defRangeEnd)
     try:
         validate_dhcp_range(NEW_VLAN_DHCP_RANGE.replace(" ", ""),ipaddress.IPv4Network(dictInput["vlanCIDR"]))
         dictInput.update({"vlanDHCPRange": NEW_VLAN_DHCP_RANGE})
